@@ -125,7 +125,14 @@ Follow these steps to set up and run the frontend application on your local mach
     ```
 
 3.  **Configure Environment Variables:**
-  Set up your local `.env` file as described in the [Environment Variables](#environment-variables) section. The backend server runs on port `8080` by default.
+  Copy the provided example file to a local `.env` file:
+  ```bash
+  cp .env.example .env
+  ```
+
+  Then update the required variables in `.env`. The backend server runs on port `8080` by default.
+
+  > **Tip:** If your operating system does not support `cp`, copy the file manually or use `copy .env.example .env` on Windows.
 
   > **Note:** For the backend setup instructions, please refer to the [backend repository's README](https://github.com/SandeepVashishtha/Eventra-Backend).
 
