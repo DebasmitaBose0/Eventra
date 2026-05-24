@@ -29,7 +29,8 @@ import {
   Sun,
   MoreHorizontal,
   Search,
-  Palette
+  Palette,
+  X
 } from "lucide-react";
 import CommandPalette from "../common/CommandPalette";
 
@@ -164,7 +165,7 @@ const AuthButtons = ({ isMobile, closeAllMenus }) => (
       onClick={isMobile ? closeAllMenus : undefined} 
       className={isMobile 
         ? "flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200 transition-all duration-300"
-        : "text-sm font-semibold text-zinc-600 hover:text-indigo-600 dark:text-zinc-300 dark:hover:text-indigo-400 transition-colors whitespace-nowrap"
+        : "text-[13px] font-semibold text-zinc-600 hover:text-indigo-600 dark:text-zinc-300 dark:hover:text-indigo-400 transition-colors whitespace-nowrap"
       }
     >
       {isMobile && <LogIn className="w-5 h-5" />}Sign In
@@ -174,7 +175,7 @@ const AuthButtons = ({ isMobile, closeAllMenus }) => (
       onClick={isMobile ? closeAllMenus : undefined} 
       className={isMobile
         ? "flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-zinc-900 dark:text-white bg-transparent border-2 border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 transition-all duration-300"
-        : "flex items-center justify-center px-6 py-2.5 text-sm font-bold text-white transition-all duration-300 bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 whitespace-nowrap"
+        : "flex items-center justify-center px-4 py-2 text-[13px] font-bold text-white transition-all duration-300 bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-indigo-500/30 whitespace-nowrap"
       }
     >
       {isMobile && <Sparkles className="w-5 h-5" />}Get Started
@@ -330,6 +331,20 @@ const DesktopNavGroup = ({ item, isActive, isOpen, onToggle, setOpenDropdown, lo
     )}
   </div>
 );
+const MobileDrawerHeader = ({ closeBtnRef, closeAllMenus, isDarkMode }) => (
+  <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+    <div className="text-base font-semibold text-gray-900 dark:text-white">Menu</div>
+    <button
+      ref={closeBtnRef}
+      onClick={closeAllMenus}
+      aria-label="Close navigation"
+      className="inline-flex items-center justify-center rounded-full p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-800"
+    >
+      <X className="w-5 h-5" />
+    </button>
+  </div>
+);
+
 const MobileDrawerFooter = ({ 
   isAuthenticated, user, primaryLine, secondaryLine, closeAllMenus, location, 
   handleLogoutClick, isDarkMode, toggleTheme, cursorEnabled, toggleCursor 
@@ -444,13 +459,17 @@ const MobileUserSection = ({
   </div>
 );
 
-// Top-level nav items kept lean so they never overflow at xl (1280px+).
-// About / FAQ / Contact are grouped under "More" to prevent collisions.
 const NAV_ITEMS = [
   { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
   { name: "Events", href: "/events", icon: <Calendar className="w-5 h-5" /> },
-  { name: "Bookmarks", href: "/bookmarks", icon: <Bookmark className="w-5 h-5" /> },
-  { name: "Reminders", href: "/reminders", icon: <Bell className="w-5 h-5" /> },
+  {
+    name: "Bookmarks",
+    icon: <Bookmark className="w-5 h-5" />,
+    subItems: [
+      { name: "Saved Events", href: "/bookmarks", icon: <Bookmark className="w-5 h-5" /> },
+      { name: "Reminders", href: "/reminders", icon: <Bell className="w-5 h-5" /> },
+    ],
+  },
   { name: "Hackathons", href: "/hackathons", icon: <Trophy className="w-5 h-5" /> },
   { name: "Projects", href: "/projects", icon: <FolderKanban className="w-5 h-5" /> },
   {
@@ -461,15 +480,6 @@ const NAV_ITEMS = [
       { name: "Contributors",      href: "/contributors",   icon: <Users        className="w-5 h-5" /> },
       { name: "Contributors Guide",href: "/contributorguide",icon: <Book        className="w-5 h-5" /> },
       { name: "Community Events",  href: "/communityEvent", icon: <Users        className="w-5 h-5" /> },
-    ],
-  },
-  {
-    name: "More",
-    icon: <MoreHorizontal className="w-5 h-5" />,
-    subItems: [
-      { name: "About",   href: "/about",   icon: <Info          className="w-5 h-5" /> },
-      { name: "FAQ",     href: "/faq",     icon: <HelpCircle    className="w-5 h-5" /> },
-      { name: "Contact", href: "/contact", icon: <MessageSquare className="w-5 h-5" /> },
     ],
   },
 ];
@@ -501,7 +511,7 @@ const DesktopNavLinks = ({ openDropdown, setOpenDropdown }) => {
   const location = useLocation();
   return (
     // gap-4 keeps items from crowding; flex-1 lets this section grow/shrink naturally
-    <div className="hidden lg:flex items-center justify-center gap-4 2xl:gap-6 flex-1 min-w-0">
+    <div className="hidden xl:flex items-center justify-center gap-2 xl:gap-4 2xl:gap-6 flex-1 min-w-0">
       <NavList 
         location={location} 
         openDropdown={openDropdown} 
@@ -731,7 +741,7 @@ const Navbar = ({ cursorEnabled, toggleCursor }) => {
           </div>
 
           {/* Right Group: Auth Controls and Mobile Toggle */}
-          <div className="hidden lg:flex items-center gap-2 shrink-0 justify-end">
+          <div className="hidden xl:flex items-center gap-2 shrink-0 justify-end">
             {/* Command Palette Trigger Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -775,9 +785,13 @@ const Navbar = ({ cursorEnabled, toggleCursor }) => {
               <AuthButtons isMobile={false} />
             )}
           </div>
+<<<<<<< HEAD
+=======
+         
+>>>>>>> fix/build-errors
 
           {/* Mobile menu button */}
-          <div className="lg:hidden ml-auto">
+          <div className="xl:hidden ml-auto">
             <button 
               ref={toggleBtnRef} 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 

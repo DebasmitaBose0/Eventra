@@ -299,7 +299,7 @@ const EventRegistration = () => {
         API_ENDPOINTS.EVENTS.REGISTER(eventId),
         {
           ...formData,
-          eventId: parseInt(eventId),
+          eventId: parseInt(eventId, 10),
           userId: user?.id || null,
         }
       );
@@ -310,24 +310,29 @@ const EventRegistration = () => {
       sendConfirmationEmail(formData.email, formData.fullName, event?.title, event?.date);
       addRegistration(event, formData);
       clearSession();
-    
+      setTimeout(() => {
+        navigate(`/events/${eventId}`);
+      }, 2000);
     } catch (error) {
       console.error("Registration error:", error);
-      
-      // ── Offline Sync Queue Fallback ──
+
       const payload = {
         ...formData,
-        eventId: parseInt(eventId),
+        eventId: parseInt(eventId, 10),
         userId: user?.id || null,
       };
-      
-      pushToQueue({ eventId: parseInt(eventId), payload });
 
+      pushToQueue({ eventId: parseInt(eventId, 10), payload });
       setRegistered(true);
       addRegistration(event, formData);
-      toast.warning("Network error. Registration queued and will sync when you are online.", { autoClose: 4000 });
+      toast.warning(
+        "Network error. Registration queued and will sync when you are online.",
+        { autoClose: 4000 }
+      );
+      setTimeout(() => {
+        navigate(`/events/${eventId}`);
+      }, 3000);
     } finally {
-      // Release lock and reset submission state
       registrationLocks.delete(eventId);
       isSubmittingRef.current = false;
       setSubmitting(false);

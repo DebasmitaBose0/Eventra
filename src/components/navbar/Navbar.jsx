@@ -65,14 +65,14 @@ const Navbar = ({
             </div>
           </Link>
 
-          {/* Right Side */}
-          <div className="flex items-center gap-4">
-            <DesktopNavbar
-              isAuthenticated={isAuthenticated()}
-              user={user}
-              logout={logout}
-            />
+          <DesktopNavbar
+            isAuthenticated={isAuthenticated()}
+            user={user}
+            logout={logout}
+          />
 
+          {/* Right Side Toggles */}
+          <div className="flex items-center gap-2 lg:gap-4">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}

@@ -91,14 +91,15 @@ export class ApiError extends Error {
 const API = axios.create({
   baseURL: API_BASE_URL || undefined,
   timeout: REQUEST_TIMEOUT_MS,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true,
 });
 
 let onUnauthorized = null;
 
+/**
+ * Register unauthorized callback.
+ * AuthContext sets this during initialization so that any 401 response
+ * triggers a centralized logout + redirect.
+ */
 export const setOnUnauthorizedHandler = (handler) => {
   onUnauthorized = handler;
 };
@@ -160,6 +161,7 @@ API.interceptors.request.use((config) => {
 
 API.interceptors.response.use(
   (response) => response,
+  // Error — normalize and optionally retry
   async (error) => {
     const config = error.config || {};
     const status = error?.response?.status;
